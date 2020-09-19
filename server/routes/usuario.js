@@ -1,4 +1,5 @@
 const express = require("express");
+const Usuario = require("../models/usuario");
 
 const router = express.Router();
 
@@ -11,17 +12,28 @@ router.get("/usuario", (req, res) => {
 });
 router.post("/usuario", (req, res) => {
   let body = req.body;
-  if (body.nombre === undefined) {
-    res.status(400).json({
-      ok: false,
-      mensaje: "El nombre es necesario",
+
+  let usuario = new Usuario({
+    nombre: body.nombre,
+    email: body.email,
+    password: body.password,
+    role: body.role,
+  });
+
+  usuario.save((error, usuarioDB) => {
+    if (error) {
+      return res.status(400).json({
+        ok: false,
+        error,
+      });
+    }
+    return res.json({
+      ok: true,
+      usuario: usuarioDB,
     });
-  } else {
-    res.status(200).json({
-      body: body,
-    });
-  }
+  });
 });
+
 router.put("/usuario/:id", (req, res) => {
   let id = req.params.id;
   res.json({
