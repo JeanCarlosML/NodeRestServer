@@ -5,8 +5,7 @@ let urlDB = "";
 if (entorno == "dev") {
   urlDB = "mongodb://localhost:27017/cafe";
 } else {
-  urlDB =
-    "mongodb+srv://jeanxxjean:rTsvOnr1JUJiEqcf@cluster0.byux7.mongodb.net/cafe?retryWrites=true&w=majority";
+  urlDB = process.env.MONGO_URI;
 }
 
 const conectarBD = async () => {
