@@ -1,11 +1,11 @@
 require("./config/config");
 const mongoDB = require("./config/conexion");
 const express = require("express");
-const cors = require('cors');
+const cors = require("cors");
 //Importacion de rutas
-const routers = require("./routes/usuario.routes");
+const routersUser = require("./routes/usuario.routes");
+const routerLogin = require("./routes/login.routes");
 const morgan = require("morgan");
-
 
 //Instancia de express
 const app = express();
@@ -29,10 +29,11 @@ app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 
 // Midell ware de rutas
-app.use(routers);
+app.use(routersUser);
+app.use(routerLogin);
 
 //
-app.use(morgan('dev'));
+app.use(morgan("dev"));
 
 app.listen(process.env.PORT, () => {
   console.log(`Escuchando en el puerto ${process.env.PORT}`);
