@@ -2,6 +2,8 @@ const bcrypt = require("bcrypt");
 const Usuario = require("../models/usuario.model");
 const jwt = require("jsonwebtoken");
 
+
+//router.post("/login", loginPost);
 const loginPost = (req, res) => {
   const { email, password } = req.body;
   Usuario.findOne({ email }, (err, usuarioDB) => {
@@ -28,6 +30,7 @@ const loginPost = (req, res) => {
       });
     }
     let { role, estado, google, _id, nombre, email } = usuarioDB;
+    //Generando token con informacion
     let token = jwt.sign(
       {
         usuario: usuarioDB,

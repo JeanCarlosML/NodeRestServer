@@ -33,12 +33,12 @@ const usuarioGet = (req, res) => {
 
 //router.post("/usuario", [verificarToken, verificarRoll], usuarioPost);
 const usuarioPost = (req, res) => {
-  let body = req.body;
+  let { nombre, email, password, role } = req.body;
   let usuario = new Usuario({
-    nombre: body.nombre,
-    email: body.email,
-    password: bcrypt.hashSync(body.password, 10),
-    role: body.role,
+    nombre,
+    email,
+    password: bcrypt.hashSync(password, 10),
+    role,
   });
   usuario.save((error, usuarioDB) => {
     if (error) {

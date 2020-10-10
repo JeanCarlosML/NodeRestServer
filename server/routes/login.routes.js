@@ -1,12 +1,10 @@
 const express = require("express");
-const loginController = require("../controllers/login.controller");
+const { loginPost } = require("../controllers/login.controller");
 const router = express.Router();
-
-router.get("/");
 
 router.get("/login");
 
-router.post("/login", loginController.loginPost);
+router.post("/login", loginPost);
 
 router.put("/login/:id");
 
