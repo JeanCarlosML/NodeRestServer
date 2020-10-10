@@ -2,31 +2,36 @@ const Usuario = require("../models/usuario.model");
 const bcrypt = require("bcrypt");
 const _ = require("underscore");
 
-const usuarioGetBasic = (req, res) => {
-  res.json("hola json");
-};
+//router.get("/usuario", [verificarToken], usuarioGet);
 const usuarioGet = (req, res) => {
   let desde = Number(req.query.skip) || 0;
   let limite = Number(req.query.limite) || 10;
-  Usuario.find({}, "nombre email")
+  Usuario.find({}, "nombre email role")
     .skip(desde)
     .limit(limite)
-    .exec((err, usuarios) => {
-      if (err) {
+    .exec((error, usuarios) => {
+      if (error) {
         return res.status(400).json({
           ok: false,
-          err,
+          error,
         });
       }
-      Usuario.countDocuments({}, (err, count) => {
-        return res.json({
-          ok: true,
-          conteo: count,
-          usuarios,
-        });
+      Usuario.countDocuments({}, (error, count) => {
+        error
+          ? res.status(400).json({
+              ok: false,
+              error,
+            })
+          : res.json({
+              ok: true,
+              conteo: count,
+              usuarios,
+            });
       });
     });
 };
+
+//router.post("/usuario", [verificarToken, verificarRoll], usuarioPost);
 const usuarioPost = (req, res) => {
   let body = req.body;
   let usuario = new Usuario({
@@ -48,8 +53,10 @@ const usuarioPost = (req, res) => {
     });
   });
 };
+
+//router.put("/usuario/:id", [verificarToken, verificarRoll], usuarioPut);
 const usuarioPut = (req, res) => {
-  let id = req.params.id;
+  let { id } = req.params;
   let body = _.pick(req.body, ["nombre", "email", "img", "role", "estado"]);
   Usuario.findByIdAndUpdate(
     id,
@@ -62,13 +69,22 @@ const usuarioPut = (req, res) => {
           error,
         });
       }
+      let usuario = _.pick(usuarioDB, [
+        "nombre",
+        "email",
+        "img",
+        "role",
+        "estado",
+      ]);
       return res.json({
         ok: true,
-        usuario: usuarioDB,
+        usuario,
       });
     }
   );
 };
+
+//router.delete("/usuario/:id", [verificarToken, verificarRoll], usuarioDelete);
 const usuarioDelete = (req, res) => {
   const { id } = req.params;
   const cambiarEstado = {
@@ -97,28 +113,9 @@ const usuarioDelete = (req, res) => {
       });
     }
   );
-  /* Usuario.findByIdAndRemove(id, (err, usuarioBorrado) => {
-    if (err) {
-      return res.status(400).json({
-        ok: false,
-        err,
-      });
-    }
-    if (usuarioBorrado == null) {
-      return res.status(400).json({
-        ok: false,
-        message: "Usuario no encontrado",
-      });
-    }
-    return res.json({
-      ok: true,
-      usuario: usuarioBorrado,
-    });
-  }); */
 };
 
 module.exports = {
-  usuarioGetBasic,
   usuarioGet,
   usuarioPost,
   usuarioPut,

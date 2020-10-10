@@ -1,33 +1,25 @@
 const express = require("express");
-const userController = require("../controllers/usuario.controller");
-const usuarioController = require("../controllers/usuario.controller");
-const router = express.Router();
-//Midellwares
+const {
+  usuarioGet,
+  usuarioPost,
+  usuarioPut,
+  usuarioDelete,
+} = require("../controllers/usuario.controller");
+//Midellwares para validar token y roll
 const {
   verificarToken,
   verificarRoll,
 } = require("../middlewares/autenticacion");
 
-router.get("/", verificarToken, userController.usuarioGetBasic);
 
-router.get("/usuario", [verificarToken], userController.usuarioGet);
+const router = express.Router();
 
-router.post(
-  "/usuario",
-  [verificarToken, verificarRoll],
-  usuarioController.usuarioPost
-);
+router.get("/usuario", [verificarToken], usuarioGet);
 
-router.put(
-  "/usuario/:id",
-  [verificarToken, verificarRoll],
-  usuarioController.usuarioPut
-);
+router.post("/usuario", [verificarToken, verificarRoll], usuarioPost);
 
-router.delete(
-  "/usuario/:id",
-  [verificarToken, verificarRoll],
-  usuarioController.usuarioDelete
-);
+router.put("/usuario/:id", [verificarToken, verificarRoll], usuarioPut);
+
+router.delete("/usuario/:id", [verificarToken, verificarRoll], usuarioDelete);
 
 module.exports = router;
