@@ -2,12 +2,9 @@ const bcrypt = require("bcrypt");
 const Usuario = require("../models/usuario.model");
 const jwt = require("jsonwebtoken");
 
-process.env.CADUCIDAD_TOKEN = 60 * 60 * 24 * 30;
-process.env.SEED = process.env.SEED || "este-es-el-seed-desarrollo";
-
 const loginPost = (req, res) => {
-  const { body } = req;
-  Usuario.findOne({ email: body.email }, (err, usuarioDB) => {
+  const { email, password } = req.body;
+  Usuario.findOne({ email }, (err, usuarioDB) => {
     if (err) {
       return res.status(500).json({
         ok: false,
@@ -22,8 +19,7 @@ const loginPost = (req, res) => {
         },
       });
     }
-
-    if (!bcrypt.compareSync(body.password, usuarioDB.password)) {
+    if (!bcrypt.compareSync(password, usuarioDB.password)) {
       return res.status(400).json({
         ok: false,
         err: {
@@ -31,7 +27,7 @@ const loginPost = (req, res) => {
         },
       });
     }
-
+    let { role, estado, google, _id, nombre, email } = usuarioDB;
     let token = jwt.sign(
       {
         usuario: usuarioDB,
@@ -39,10 +35,9 @@ const loginPost = (req, res) => {
       process.env.SEED,
       { expiresIn: process.env.CADUCIDAD_TOKEN }
     );
-
     return res.json({
       ok: true,
-      usuario: usuarioDB,
+      usuario: { role, estado, google, _id, nombre, email },
       token,
     });
   });

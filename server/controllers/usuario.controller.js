@@ -18,7 +18,7 @@ const usuarioGet = (req, res) => {
           err,
         });
       }
-      Usuario.count({}, (err, count) => {
+      Usuario.countDocuments({}, (err, count) => {
         return res.json({
           ok: true,
           conteo: count,
