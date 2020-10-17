@@ -3,6 +3,7 @@ require("./config/config");
 require("./config/conexion");
 const express = require("express");
 const cors = require("cors");
+const path = require("path");
 //Importacion de rutas
 const routersUser = require("./routes/usuario.routes");
 const routerLogin = require("./routes/login.routes");
@@ -13,6 +14,9 @@ const app = express();
 
 //Cors libres para peticion de cualquier dominio
 app.use(cors());
+
+//Public
+app.use(express.static(path.resolve(__dirname, "../public")));
 
 //Mostrar tipos de peticiones realizadas
 app.use(morgan("dev"));
