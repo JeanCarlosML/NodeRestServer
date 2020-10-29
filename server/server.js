@@ -1,3 +1,4 @@
+//Configuracion de variables de entorno
 require("./config/config");
 //Instancia de BD
 require("./config/conexion");
@@ -5,8 +6,8 @@ const express = require("express");
 const cors = require("cors");
 const path = require("path");
 //Importacion de rutas
-const routersUser = require("./routes/usuario.routes");
-const routerLogin = require("./routes/login.routes");
+const routerGlobal = require("./config/routes");
+//Morgan para desarrollo / tiempo de respuesta de peticion
 const morgan = require("morgan");
 
 //Instancia de express
@@ -28,8 +29,7 @@ app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 
 // Midellware de rutas
-app.use(routersUser);
-app.use(routerLogin);
+app.use(routerGlobal);
 
 app.listen(process.env.PORT, () => {
   console.log(`Escuchando en el puerto ${process.env.PORT}`);

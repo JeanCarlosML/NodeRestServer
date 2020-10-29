@@ -69,16 +69,9 @@ const usuarioPut = (req, res) => {
           error,
         });
       }
-      let usuario = _.pick(usuarioDB, [
-        "nombre",
-        "email",
-        "img",
-        "role",
-        "estado",
-      ]);
       return res.json({
         ok: true,
-        usuario,
+        usuario:usuarioDB,
       });
     }
   );

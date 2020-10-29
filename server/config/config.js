@@ -34,7 +34,7 @@ process.env.URLDB = urlDB;
 // ============================
 
 // ============================
-//CLIENT_ID PERSONAL
+//CLIENT_ID PERSONAL DE GOOGLE
 // ============================
 process.env.CLIENT_ID =
   process.env.CLIENT_ID ||
