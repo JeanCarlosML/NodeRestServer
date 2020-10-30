@@ -1,0 +1,39 @@
+@import url("https://fonts.googleapis.com/css2?family=Open+Sans&display=swap");
+* {
+  margin: 0px;
+  padding: 0px;
+  font-family: "Open Sans", sans-serif;
+}
+.container {
+  width: 100%;
+  height: 100vh;
+  background-color: #1f1f1f;
+}
+.main {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+}
+.main-header {
+  min-width: 375px;
+  width: 40%;
+  margin: auto;
+  text-align: center;
+}
+.main-header h1 {
+  color: white;
+  padding: 20px 0px;
+  font-size: 30px;
+}
+.abcRioButton{
+    margin: auto;
+}
+.g-sigout2{
+    text-decoration: none;
+    color: white;
+    font-size: 20px;
+    padding: 30px 0px;
+    display: block;
+}

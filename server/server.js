@@ -17,8 +17,11 @@ const app = express();
 app.use(cors());
 
 //Public
+
 app.use(express.static(path.resolve(__dirname, "../public")));
 
+//Modulo path para unir rutas y especificar el directorio publico
+console.log(path.resolve(__dirname, "../public"));
 //Mostrar tipos de peticiones realizadas
 app.use(morgan("dev"));
 
