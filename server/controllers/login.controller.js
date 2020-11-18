@@ -7,15 +7,10 @@ const { OAuth2Client } = require("google-auth-library");
 const client = new OAuth2Client(process.env.CLIENT_ID);
 
 //router.post("/login", loginPost);
-const loginPost = (req, res) => {
-  const { email, password } = req.body;
-  Usuario.findOne({ email }, (err, usuarioDB) => {
-    if (err) {
-      return res.status(500).json({
-        ok: false,
-        err,
-      });
-    }
+const loginPost = async (req, res) => {
+  try {
+    const { email, password } = req.body;
+    let usuarioDB = await Usuario.findOne({ email });
     if (!usuarioDB) {
       return res.status(400).json({
         ok: false,
@@ -32,8 +27,6 @@ const loginPost = (req, res) => {
         },
       });
     }
-    let { role, estado, google, _id, nombre, email } = usuarioDB;
-    //Generando token con informacion
     let token = jwt.sign(
       {
         usuario: usuarioDB,
@@ -43,10 +36,15 @@ const loginPost = (req, res) => {
     );
     return res.json({
       ok: true,
-      usuario: { role, estado, google, _id, nombre, email },
+      usuario: usuarioDB,
       token,
     });
-  });
+  } catch (err) {
+    return res.status(500).json({
+      ok: false,
+      err,
+    });
+  }
 };
 
 //Configuracion de google
@@ -66,44 +64,42 @@ async function verify(token) {
 
 //router.post("/google", loginPost);
 const loginPostGoogle = async (req, res) => {
-  let { idtoken } = req.body;
-  let googleUser = await verify(idtoken).catch((err) => {
+  try {
+    let { idtoken } = req.body;
+    let googleUser = await verify(idtoken);
+    let usuarioDB = await Usuario.findOne({ email: googleUser.email });
+    if (usuarioDB.google === false) {
+      return res.status(400).json({
+        ok: false,
+        error: {
+          message: "Debe usar su autenticacion normal",
+        },
+      });
+    } else {
+      let token = jwt.sign(
+        {
+          usuario: usuarioDB,
+        },
+        process.env.SEED,
+        { expiresIn: process.env.CADUCIDAD_TOKEN }
+      );
+      return res.json({
+        ok: true,
+        usuario: usuarioDB,
+        token,
+      });
+    }
+  } catch (err) {
+    console.log(err);
     return res.status(403).json({
       ok: false,
       err,
     });
-  });
-  Usuario.findOne({ email: googleUser.email }, (err, usuarioDB) => {
-    if (err) {
-      return res.status(500).json({
-        ok: false,
-        err,
-      });
-    }
-    if (usuarioDB) {
-      if (usuarioDB.google === false) {
-        return res.status(400).json({
-          ok: false,
-          error: {
-            message: "Debe usar su autenticacion normal",
-          },
-        });
-      } else {
-        let token = jwt.sign(
-          {
-            usuario: usuarioDB,
-          },
-          process.env.SEED,
-          { expiresIn: process.env.CADUCIDAD_TOKEN }
-        );
-        return res.json({
-          ok: true,
-          usuario: usuarioDB,
-          token,
-        });
-      }
-    }
-  });
+    return res.status(500).json({
+      ok: false,
+      err,
+    });
+  }
 };
 
 module.exports = { loginPost, loginPostGoogle };
