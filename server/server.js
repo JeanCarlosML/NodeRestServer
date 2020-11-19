@@ -1,5 +1,7 @@
 //Configuracion de variables de entorno
 require("./config/config");
+//Configuracion de varialbes de entorno con .env
+require("dotenv").config();
 //Instancia de BD
 require("./config/conexion");
 const express = require("express");
