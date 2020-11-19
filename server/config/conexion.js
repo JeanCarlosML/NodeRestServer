@@ -1,17 +1,16 @@
 const mongoose = require("mongoose");
-mongoose.connect(
-  process.env.URLDB,
-  {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-    useFindAndModify: false,
-    useCreateIndex: true,
-  },
-  (err) => {
-    if (err) {
-      console.log(`Error al conectar la Base de Datos :`, err);
-    } else {
-      console.log(`Base de datos conectada correctamente`);
-    }
+
+const conectarBD = async () => {
+  try {
+    await mongoose.connect(process.env.URLDB, {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+      useFindAndModify: false,
+      useCreateIndex: true,
+    });
+    console.log(`Base de datos conectada correctamente`);
+  } catch (error) {
+    console.log(`Error al conectar la Base de Datos :`, error);
   }
-);
+};
+conectarBD();

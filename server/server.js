@@ -1,7 +1,5 @@
 //Configuracion de variables de entorno
 require("./config/config");
-//Configuracion de varialbes de entorno con .env
-require("dotenv").config();
 //Instancia de BD
 require("./config/conexion");
 const express = require("express");
@@ -11,15 +9,12 @@ const path = require("path");
 const routerGlobal = require("./config/routes");
 //Morgan para desarrollo / tiempo de respuesta de peticion
 const morgan = require("morgan");
-
 //Instancia de express
 const app = express();
-
 //Cors libres para peticion de cualquier dominio
 app.use(cors());
 
 //Public
-
 app.use(express.static(path.resolve(__dirname, "../public")));
 
 //Modulo path para unir rutas y especificar el directorio publico
