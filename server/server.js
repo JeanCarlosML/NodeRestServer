@@ -17,8 +17,6 @@ app.use(cors());
 //Public
 app.use(express.static(path.resolve(__dirname, "../public")));
 
-//Modulo path para unir rutas y especificar el directorio publico
-console.log(path.resolve(__dirname, "../public"));
 //Mostrar tipos de peticiones realizadas
 app.use(morgan("dev"));
 
@@ -31,6 +29,7 @@ app.use(express.json());
 // Midellware de rutas
 app.use(routerGlobal);
 
+process.env.PORT = process.env.PORT || 3000;
 app.listen(process.env.PORT, () => {
   console.log(`Escuchando en el puerto ${process.env.PORT}`);
 });
