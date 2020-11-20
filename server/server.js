@@ -1,14 +1,15 @@
+const express = require("express");
+const cors = require("cors");
+const path = require("path");
+//Morgan para desarrollo / tiempo de respuesta de peticion
+const morgan = require("morgan");
 //Configuracion de variables de entorno
 require("./config/config");
 //Instancia de BD
 require("./config/conexion");
-const express = require("express");
-const cors = require("cors");
-const path = require("path");
 //Importacion de rutas
 const routerGlobal = require("./config/routes");
-//Morgan para desarrollo / tiempo de respuesta de peticion
-const morgan = require("morgan");
+
 //Instancia de express
 const app = express();
 //Cors libres para peticion de cualquier dominio

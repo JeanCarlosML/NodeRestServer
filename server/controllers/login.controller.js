@@ -49,23 +49,28 @@ const loginPost = async (req, res) => {
 
 //Configuracion de google
 async function verify(token) {
-  const ticket = await client.verifyIdToken({
-    idToken: token,
-    audience: process.env.CLIENT_ID,
-  });
-  const payload = ticket.getPayload(); //Informacion del usuario autenticado
-  return {
-    nombre: payload.name,
-    email: payload.email,
-    img: payload.picture,
-    google: true,
-  };
+  try {
+    const ticket = await client.verifyIdToken({
+      idToken: token,
+      audience: process.env.CLIENT_ID,
+    });
+    const payload = ticket.getPayload(); //Informacion del usuario autenticado
+    return {
+      nombre: payload.name,
+      email: payload.email,
+      img: payload.picture,
+      google: true,
+    };
+  } catch (error) {
+    console.log({ message: "Error al usar funcion de google", error });
+  }
 }
 
 //router.post("/google", loginPost);
 const loginPostGoogle = async (req, res) => {
   try {
     let { idtoken } = req.body;
+    console.log(req.body)
     let googleUser = await verify(idtoken);
     let usuarioDB = await Usuario.findOne({ email: googleUser.email });
     if (usuarioDB.google === false) {
@@ -92,10 +97,6 @@ const loginPostGoogle = async (req, res) => {
   } catch (err) {
     console.log(err);
     return res.status(403).json({
-      ok: false,
-      err,
-    });
-    return res.status(500).json({
       ok: false,
       err,
     });
