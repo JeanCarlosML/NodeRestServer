@@ -4,6 +4,12 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="./styles/index.css" type="text/css" />
+    <!--Configuracion de google auth-->
+    <meta
+      name="google-signin-client_id"
+      content="75191184269-1u9jujf7obhng5b0s9qqokd2p6j0d5vt.apps.googleusercontent.com"
+    />
+    <script src="https://apis.google.com/js/platform.js" async defer></script>
     <title>Document</title>
   </head>
   <body>
@@ -11,8 +17,37 @@
       <main class="main">
         <div class="main-header">
           <h1>Google Sign</h1>
+            <div class="g-signin2" data-onsuccess="onSignIn"></div>
+            <a class="g-sigout2" href="#" onclick="signOut();">Sign out</a>
         </div>
       </main>
     </div>
+    <script>
+      function signOut() {
+        var auth2 = gapi.auth2.getAuthInstance();
+        auth2.signOut().then(function () {
+          console.log("User signed out.");
+        });
+      }
+      function onSignIn(googleUser) {
+        var profile = googleUser.getBasicProfile();
+        console.log("ID: " + profile.getId()); // Do not send to your backend! Use an ID token instead.
+        console.log("Name: " + profile.getName());
+        console.log("Image URL: " + profile.getImageUrl());
+        console.log("Email: " + profile.getEmail()); // This is null if the 'email' scope is not present.
+        var id_token = googleUser.getAuthResponse().id_token;
+
+        var xhr = new XMLHttpRequest();
+        xhr.open("POST", "http://localhost:3000/google");
+        xhr.setRequestHeader(
+          "Content-Type",
+          "application/x-www-form-urlencoded"
+        );
+        xhr.onload = function () {
+          console.log("Signed in as: " + xhr.responseText);
+        };
+        xhr.send("idtoken=" + id_token);
+      }
+    </script> 
   </body>
 </html>

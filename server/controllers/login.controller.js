@@ -49,54 +49,81 @@ const loginPost = async (req, res) => {
 
 //Configuracion de google
 async function verify(token) {
-  try {
-    const ticket = await client.verifyIdToken({
-      idToken: token,
-      audience: process.env.CLIENT_ID,
-    });
-    const payload = ticket.getPayload(); //Informacion del usuario autenticado
-    return {
-      nombre: payload.name,
-      email: payload.email,
-      img: payload.picture,
-      google: true,
-    };
-  } catch (error) {
-    console.log({ message: "Error al usar funcion de google", error });
-  }
+  const ticket = await client.verifyIdToken({
+    idToken: token,
+    audience: process.env.CLIENT_ID,
+  });
+  const payload = ticket.getPayload(); //Informacion del usuario autenticado
+  let dataPayload = {
+    nombre: payload.name,
+    email: payload.email,
+    img: payload.picture,
+    google: true,
+  };
+  return dataPayload;
 }
 
 //router.post("/google", loginPost);
 const loginPostGoogle = async (req, res) => {
   try {
     let { idtoken } = req.body;
-    console.log(req.body)
     let googleUser = await verify(idtoken);
     let usuarioDB = await Usuario.findOne({ email: googleUser.email });
-    if (usuarioDB.google === false) {
-      return res.status(400).json({
-        ok: false,
-        error: {
-          message: "Debe usar su autenticacion normal",
-        },
-      });
-    } else {
-      let token = jwt.sign(
-        {
+    if (usuarioDB) {
+      if (usuarioDB.google === false) {
+        return res.status(400).json({
+          ok: false,
+          error: {
+            message: "Debe usar su autenticacion normal",
+          },
+        });
+      } else {
+        let token = jwt.sign(
+          {
+            usuario: usuarioDB,
+          },
+          process.env.SEED,
+          { expiresIn: process.env.CADUCIDAD_TOKEN }
+        );
+        return res.status(200).json({
+          ok: true,
           usuario: usuarioDB,
-        },
-        process.env.SEED,
-        { expiresIn: process.env.CADUCIDAD_TOKEN }
-      );
-      return res.json({
-        ok: true,
-        usuario: usuarioDB,
-        token,
-      });
+          token,
+        });
+      }
+    } else {
+      //Si el usuario no existe en la base de datos
+      try {
+        let usuario = new Usuario({
+          nombre: googleUser.nombre,
+          email: googleUser.email,
+          password: ":)",
+          img: googleUser.img,
+          google: googleUser.google,
+        });
+        let usuarioDB = await usuario.save();
+        let token = jwt.sign(
+          {
+            usuario: usuarioDB,
+          },
+          process.env.SEED,
+          { expiresIn: process.env.CADUCIDAD_TOKEN }
+        );
+        return res.status(200).json({
+          ok: true,
+          usuario: usuarioDB,
+          token,
+        });
+      } catch (error) {
+        return res.status(400).json({
+          ok: false,
+          error
+        });
+      }
     }
   } catch (err) {
-    console.log(err);
-    return res.status(403).json({
+    console.log({ error: "d" });
+    return res.json({
       ok: false,
       err,
     });
