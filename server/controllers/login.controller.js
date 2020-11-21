@@ -74,7 +74,7 @@ const loginPostGoogle = async (req, res) => {
         return res.status(400).json({
           ok: false,
           error: {
-            message: "Debe usar su autenticacion normal",
+            message: "Debe usar su autenticacion normal, ya que existe una cuenta creada con ese correo",
           },
         });
       } else {
@@ -122,7 +122,6 @@ const loginPostGoogle = async (req, res) => {
       }
     }
   } catch (err) {
-    console.log({ error: "d" });
     return res.json({
       ok: false,
       err,

@@ -17,8 +17,8 @@
       <main class="main">
         <div class="main-header">
           <h1>Google Sign</h1>
-            <div class="g-signin2" data-onsuccess="onSignIn"></div>
-            <a class="g-sigout2" href="#" onclick="signOut();">Sign out</a>
+          <div class="g-signin2" data-onsuccess="onSignIn"></div>
+          <a class="g-sigout2" href="#" onclick="signOut();">Sign out</a>
         </div>
       </main>
     </div>
@@ -30,14 +30,8 @@
         });
       }
       function onSignIn(googleUser) {
-        var profile = googleUser.getBasicProfile();
-        console.log("ID: " + profile.getId()); // Do not send to your backend! Use an ID token instead.
-        console.log("Name: " + profile.getName());
-        console.log("Image URL: " + profile.getImageUrl());
-        console.log("Email: " + profile.getEmail()); // This is null if the 'email' scope is not present.
-        var id_token = googleUser.getAuthResponse().id_token;
-
-        var xhr = new XMLHttpRequest();
+        let id_token = googleUser.getAuthResponse().id_token;
+        const xhr = new XMLHttpRequest();
         xhr.open("POST", "http://localhost:3000/google");
         xhr.setRequestHeader(
           "Content-Type",
@@ -47,7 +41,8 @@
           console.log("Signed in as: " + xhr.responseText);
         };
         xhr.send("idtoken=" + id_token);
+        console.log(id_token);
       }
-    </script> 
+    </script>
   </body>
 </html>
