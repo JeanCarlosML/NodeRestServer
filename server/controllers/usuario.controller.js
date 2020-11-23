@@ -1,7 +1,6 @@
 const Usuario = require("../models/usuario.model");
 const bcrypt = require("bcrypt");
 const _ = require("underscore");
-
 //router.get("/usuario", [verificarToken], usuarioGet);
 const usuarioGet = async (req, res) => {
   try {
@@ -52,6 +51,7 @@ const usuarioPost = async (req, res) => {
 const usuarioPut = async (req, res) => {
   try {
     let { id } = req.params;
+    console.log(req.file);
     let body = _.pick(req.body, ["nombre", "email", "img", "role", "estado"]);
     let usuarioDB = await Usuario.findByIdAndUpdate(id, body, {
       runValidators: true,
@@ -59,7 +59,7 @@ const usuarioPut = async (req, res) => {
       context: "query",
     });
     return res.json({
-      ok: true,
+      ok: true, 
       usuario: usuarioDB,
     });
   } catch (error) {
@@ -71,13 +71,15 @@ const usuarioPut = async (req, res) => {
 };
 
 //router.delete("/usuario/:id", [verificarToken, verificarRoll], usuarioDelete);
-const usuarioDelete = async(req, res) => {
+const usuarioDelete = async (req, res) => {
   try {
     let { id } = req.params;
     const cambiarEstado = {
       estado: false,
     };
-    let usuarioDB = await Usuario.findByIdAndUpdate(id, cambiarEstado, { new: true });
+    let usuarioDB = await Usuario.findByIdAndUpdate(id, cambiarEstado, {
+      new: true,
+    });
     if (!usuarioDB) {
       return res.status(400).json({
         ok: false,
