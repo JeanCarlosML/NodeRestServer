@@ -8,7 +8,7 @@ const uploadFile = (req, res, next) => {
       cb(null, path.resolve(__dirname, "../../uploads"));
     },
     filename: (req, file, cb) => {
-      cb(null, file.originalname);
+      cb(null, new Date().getTime() + path.extname(file.originalname));
     },
   });
   //Filtrar tipo de archivos
