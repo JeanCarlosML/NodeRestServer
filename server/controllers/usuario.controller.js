@@ -51,7 +51,6 @@ const usuarioPost = async (req, res) => {
 const usuarioPut = async (req, res) => {
   try {
     let { id } = req.params;
-    console.log(req.file);
     let body = _.pick(req.body, ["nombre", "email", "img", "role", "estado"]);
     let usuarioDB = await Usuario.findByIdAndUpdate(id, body, {
       runValidators: true,
@@ -59,7 +58,7 @@ const usuarioPut = async (req, res) => {
       context: "query",
     });
     return res.json({
-      ok: true, 
+      ok: true,
       usuario: usuarioDB,
     });
   } catch (error) {

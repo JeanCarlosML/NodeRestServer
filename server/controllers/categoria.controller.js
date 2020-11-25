@@ -6,7 +6,12 @@ const categoriaGet = async (req, res) => {
   try {
     let skip = Number(req.query.skip) || 0;
     let limit = Number(req.query.limit) || 10;
-    let categorias = await Categria.find({}).skip(skip).limit(limit).exec();
+    let categorias = await Categria.find({})
+      .populate("usuario", "nombre email")//Mostrar datos de usuario [selecciono nombre e email en segundo argumento]
+      .sort("descripcion")//Ordena alfaveticamente los registros segun la descripcion
+      .skip(skip)
+      .limit(limit)
+      .exec();
     let count = await Categria.countDocuments({});
     return res.status(200).json({
       ok: true,
@@ -107,7 +112,6 @@ const categoriaDelete = async (req, res) => {
   try {
     let { id } = req.params;
     let categoriaDB = await Categria.findByIdAndRemove(id);
-    console.log(categoriaDB);
     if (!categoriaDB) {
       return res.status(400).json({
         ok: false,
