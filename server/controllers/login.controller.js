@@ -74,7 +74,8 @@ const loginPostGoogle = async (req, res) => {
         return res.status(400).json({
           ok: false,
           error: {
-            message: "Debe usar su autenticacion normal, ya que existe una cuenta creada con ese correo",
+            message:
+              "Debe usar su autenticacion normal, ya que existe una cuenta creada con ese correo",
           },
         });
       } else {
@@ -93,36 +94,29 @@ const loginPostGoogle = async (req, res) => {
       }
     } else {
       //Si el usuario no existe en la base de datos
-      try {
-        let usuario = new Usuario({
-          nombre: googleUser.nombre,
-          email: googleUser.email,
-          password: ":)",
-          img: googleUser.img,
-          google: googleUser.google,
-        });
-        let usuarioDB = await usuario.save();
-        let token = jwt.sign(
-          {
-            usuario: usuarioDB,
-          },
-          process.env.SEED,
-          { expiresIn: process.env.CADUCIDAD_TOKEN }
-        );
-        return res.status(200).json({
-          ok: true,
+      let usuario = new Usuario({
+        nombre: googleUser.nombre,
+        email: googleUser.email,
+        password: ":)",
+        img: googleUser.img,
+        google: googleUser.google,
+      });
+      let usuarioDB = await usuario.save();
+      let token = jwt.sign(
+        {
           usuario: usuarioDB,
-          token,
-        });
-      } catch (error) {
-        return res.status(400).json({
-          ok: false,
-          error
-        });
-      }
+        },
+        process.env.SEED,
+        { expiresIn: process.env.CADUCIDAD_TOKEN }
+      );
+      return res.status(200).json({
+        ok: true,
+        usuario: usuarioDB,
+        token,
+      });
     }
   } catch (err) {
-    return res.json({
+    return res.status(500).json({
       ok: false,
       err,
     });
