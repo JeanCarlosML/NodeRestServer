@@ -40,7 +40,7 @@ const loginPost = async (req, res) => {
       token,
     });
   } catch (err) {
-    return res.status(500).json({
+    return res.status(400).json({
       ok: false,
       err,
     });
